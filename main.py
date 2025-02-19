@@ -1,9 +1,17 @@
 from fastapi import FastAPI, HTTPException, status
 from models.model import BPOutput, SignalInput
-from prediction.predictor import predict_bp
+from prediction.predictor import inference_bp
 import json
+import joblib
+from utils.utils import read_config_file
 
 app = FastAPI(title="Predicting your blood pressure")
+
+config_path = "./config/configs.yaml"
+config = read_config_file(config_path)
+
+if config:
+    print("Configuration loaded successfully.")
 
 @app.get("/hello/{name}")
 async def say_hello(name: str):
@@ -12,10 +20,19 @@ async def say_hello(name: str):
 @app.post("/predict", response_model=BPOutput)
 async def predict_bp_endpoint(signals:SignalInput):
     try:
-        ecg_list = signals.ecg
-        ppg_list = signals.ppg
+        sbp_list = signals.sbp
+        dbp_list = signals.dbp
 
-        sbp, dbp, description = predict_bp(ecg_list, ppg_list)
+        if not sbp_list or not dbp_list:
+            raise ValueError("data not loaded, please valid the data.")
+
+        sbp_predict_model = config["model"]["sbp_model_path"]
+        dbp_predict_model = config["model"]["dbp_model_path"]
+
+        if not sbp_predict_model or not dbp_predict_model:
+            raise ValueError("model not loaded, please valid the model.")
+
+        sbp, dbp, description = inference_bp(sbp_list, dbp_list, sbp_predict_model, dbp_predict_model)
         return BPOutput(sbp=sbp, dbp=dbp, description=description)
 
     except Exception as e:  # Catch any exception
