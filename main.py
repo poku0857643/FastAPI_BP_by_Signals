@@ -13,9 +13,6 @@ config = read_config_file(config_path)
 if config:
     print("Configuration loaded successfully.")
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
 
 @app.post("/predict", response_model=BPOutput)
 async def predict_bp_endpoint(signals:SignalInput):
@@ -43,3 +40,4 @@ async def predict_bp_endpoint(signals:SignalInput):
 @app.get("/")
 def root():
     return {"message": "Blood Pressure Prediction API is running"}
+
