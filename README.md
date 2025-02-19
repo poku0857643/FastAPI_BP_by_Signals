@@ -1,4 +1,4 @@
-## Blood Pressure Prediction API and VIsualizer
+## Blood Pressure Prediction API and Visualizer
 
 ### Overview
 
