@@ -28,11 +28,13 @@ async def predict_bp_endpoint(signals:SignalInput):
 
         sbp_predict_model = config["model"]["sbp_model_path"]
         dbp_predict_model = config["model"]["dbp_model_path"]
+        loaded_sbp_model = joblib.load(sbp_predict_model)
+        loaded_dbp_model = joblib.load(dbp_predict_model)
 
         if not sbp_predict_model or not dbp_predict_model:
             raise ValueError("model not loaded, please valid the model.")
 
-        sbp, dbp, description = inference_bp(sbp_list, dbp_list, sbp_predict_model, dbp_predict_model)
+        sbp, dbp, description = inference_bp(sbp_list, dbp_list, loaded_sbp_model, loaded_dbp_model)
         return BPOutput(sbp=sbp, dbp=dbp, description=description)
 
     except Exception as e:  # Catch any exception
