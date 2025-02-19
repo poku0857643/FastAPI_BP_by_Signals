@@ -25,7 +25,7 @@ def inference_bp(user_dbp:list[float], user_sbp:list[float],loaded_dbp_model, lo
         desc = "Blood pressure is within normal range."
 
     # print(sbp, dbp, desc)
-    return round(output_sbp, 2), round(output_dbp, 2), desc
+    return round(output_sbp[0], 2), round(output_dbp[0], 2), desc
 
 
 
